@@ -1,0 +1,12 @@
+1. The JPA specification requires that all persistent classes have a no-arg constructor
+JPA Rules:
+public or protected no-arg constructor must exist. Additional constructors are fine.
+Persistent fields should not be public (protected, package visible and private are aloud).
+Final persistent attributes or methods are not aloud.
+
+2. You can pass the DTO to the logger and it will print its toString() method
+
+3. We have three mechanisms that Spring Data JPA provides for querying data in a database:
+    Query methods (convention methods)
+    @Query annotation (with @Modifying for insert,update,delete)
+    Custom repository implementation: https://stackoverflow.com/questions/30874214/how-to-access-entity-manager-with-spring-boot-and-spring-data

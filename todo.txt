@@ -1,0 +1,54 @@
+<<For today>>
+0. Spring data JPA: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#preface
+1. What are @Bean annotations
+2. What are @Repository, @Service and @Component annotations
+3. @Bean vs @Component annotation
+4. What are @Transactional annotations
+5. Spring data JPA queries.
+
+<<For Tomorrow>>
+0. Service validation with normal error messaging indicating bad properties
+1. Log4j vs slf4j
+2. How to add logging in spring
+3. logging with context data
+
+* Docker compose
+
+Features:
+
+* Todos
+    Todo
+    SubTasks
+* TodoistIntegration
+* App User
+* Registration
+* Email Verification
+* Admin Feature
+    - Only admin can add users
+    - users can delete themselves.
+
+
+1. Spring Boot Annotations
+
+2. Spring Boot JPA setup
+
+3. Java date and time API java.time.*
+
+4. How to manage database updates from the code (migrations equivalent)
+
+5. Pagination for methods that return list of entities
+
+6. What is dispatcher servlet
+
+7. What is HikariPool and how does connection pooling with with JDBC/JPA/Spring Data JPA
+
+
+
+
+
+Research packages:
+
+1. Spring JPA
+2. Spring Security
+3. Lombok annotations
+4.

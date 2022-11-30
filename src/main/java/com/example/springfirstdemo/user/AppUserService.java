@@ -1,15 +1,21 @@
 package com.example.springfirstdemo.user;
 
 import com.example.springfirstdemo.common.exceptions.BadRequestException;
+import com.example.springfirstdemo.common.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AppUserService {
@@ -22,8 +28,28 @@ public class AppUserService {
         this.userRepository = userRepository;
     }
 
-    @Transactional
-    public AppUser createUser(CreateUserRequest createUserRequest) {
+    public List<AppUser> getAll() {
+        logger.debug("getting all users");
+
+        List<AppUser> users = userRepository.findAll();
+        return users;
+    }
+
+    public Optional<AppUser> getById(UUID userId) {
+        logger.info("getting user by userId: {}", userId);
+
+        Optional<AppUser> user = userRepository.findById(userId);
+        if(user.isEmpty()) {
+            logger.info("user not found with userId: {}", userId);
+        } else {
+            logger.info("user found with userId: {}, email: {}", user.get().getId(), user.get().getEmail());
+        }
+        return user;
+
+    }
+
+    @Transactional()
+    public AppUser create(CreateUserRequest createUserRequest) {
         logger.info("Creating a new with the details: {}", createUserRequest);
 
         if (createUserRequest.getName() == null || createUserRequest.getName().isEmpty()) {
@@ -48,5 +74,39 @@ public class AppUserService {
         newUser = userRepository.save(newUser);
         logger.info("User created: {}", newUser);
         return newUser;
+    }
+
+    @Transactional
+    public AppUser update(UUID userId, UpdateUserRequest updateUserRequest) {
+        logger.debug("updated user by userId: {} with new data: {}", userId, updateUserRequest);
+        Optional<AppUser> user = getById(userId);
+        if(user.isEmpty()) {
+            throw new NotFoundException("user with userId: %s not found", userId);
+        }
+
+        if(updateUserRequest.getName() != null && !updateUserRequest.getName().isEmpty()) {
+            user.get().setName(updateUserRequest.getName());
+        }
+
+        if(updateUserRequest.getEmail() != null && !updateUserRequest.getEmail().isEmpty()) {
+            user.get().setEmail(updateUserRequest.getEmail());
+        }
+
+        if(updateUserRequest.getDateOfBirth() != null) {
+            user.get().setDateOfBirth(updateUserRequest.getDateOfBirth());
+        }
+
+        logger.info("user {} updated", userId);
+        userRepository.save(user.get());
+
+        return user.get();
+    }
+
+    @Transactional
+    public void delete(UUID userId) {
+        logger.info("deleting user: {}", userId);
+
+        userRepository.deleteById(userId);
+        logger.info("user {} deleted", userId);
     }
 }
