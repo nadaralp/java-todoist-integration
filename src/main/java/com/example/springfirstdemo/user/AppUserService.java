@@ -60,23 +60,23 @@ public class AppUserService {
 //        if(userWithSameEmail != null) {
 //            throw new BadRequestException("email: %s is already taken", createUserRequest.getEmail());
 //        }
-        if (userRepository.existsByEmail(createUserRequest.getEmail())) {
-            throw new BadRequestException("email: %s is already taken", createUserRequest.getEmail());
-        }
-
-        if (createUserRequest.getName() == null || createUserRequest.getName().isEmpty()) {
-            throw new BadRequestException("Cannot create user. Empty user name received");
-        }
-
-        if (createUserRequest.getEmail() == null || createUserRequest.getEmail().isEmpty()) {
-            throw new BadRequestException("Cannot create user. Empty user email received");
-        }
-
-        if (createUserRequest.getDateOfBirth() == null ||
-                Period.between(createUserRequest.getDateOfBirth(), LocalDate.now()).getYears() < 18
-        ) {
-            throw new BadRequestException("User age must be bigger than 18");
-        }
+//        if (userRepository.existsByEmail(createUserRequest.getEmail())) {
+//            throw new BadRequestException("email: %s is already taken", createUserRequest.getEmail());
+//        }
+//
+//        if (createUserRequest.getName() == null || createUserRequest.getName().isEmpty()) {
+//            throw new BadRequestException("Cannot create user. Empty user name received");
+//        }
+//
+//        if (createUserRequest.getEmail() == null || createUserRequest.getEmail().isEmpty()) {
+//            throw new BadRequestException("Cannot create user. Empty user email received");
+//        }
+//
+//        if (createUserRequest.getDateOfBirth() == null ||
+//                Period.between(createUserRequest.getDateOfBirth(), LocalDate.now()).getYears() < 18
+//        ) {
+//            throw new BadRequestException("User age must be bigger than 18");
+//        }
 
         AppUser newUser = new AppUser(
                 createUserRequest.getName(),

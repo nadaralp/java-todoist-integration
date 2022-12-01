@@ -2,6 +2,7 @@ package com.example.springfirstdemo.user;
 
 import com.example.springfirstdemo.common.exceptions.BadRequestException;
 import com.example.springfirstdemo.common.exceptions.NotFoundException;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,13 +11,18 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -62,7 +68,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<?> createUser(
+            @RequestBody @Valid CreateUserRequest createUserRequest
+    ) {
         URI serverBaseUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
         try {
             AppUser createdUser = appUserService.create(createUserRequest);
@@ -107,4 +115,19 @@ public class UserController {
     }
 
 
+    // Note: @ExceptionHandler must be either in the controller or a @ControllerAdvice global exception handler
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    @ResponseStatus(BAD_REQUEST)
+//    public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+//        return exception
+//                .getBindingResult()
+//                .getFieldErrors()
+//                .stream()
+//                .collect(
+//                        Collectors.toMap(
+//                                fieldError -> fieldError.getField(),
+//                                fieldError -> fieldError.getDefaultMessage()
+//                        )
+//                );
+//    }
 }

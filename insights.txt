@@ -10,3 +10,9 @@ Final persistent attributes or methods are not aloud.
     Query methods (convention methods)
     @Query annotation (with @Modifying for insert,update,delete)
     Custom repository implementation: https://stackoverflow.com/questions/30874214/how-to-access-entity-manager-with-spring-boot-and-spring-data
+
+
+4. When Spring Boot finds an argument annotated with @Valid, it automatically bootstraps the default JSR 380 implementation — Hibernate Validator — and validates the argument.
+When the target argument fails to pass the validation, Spring Boot throws a MethodArgumentNotValidException exception.
+
+5. When you add new methods the dev server cannot pick it up. You have to restart manually.
