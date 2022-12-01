@@ -3,24 +3,27 @@ package com.example.springfirstdemo.user;
 import com.example.springfirstdemo.common.exceptions.BadRequestException;
 import com.example.springfirstdemo.common.exceptions.NotFoundException;
 import org.apache.coyote.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @RestController()
 @RequestMapping(value = "api/users")
 public class UserController {
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final AppUserService appUserService;
 
@@ -31,8 +34,21 @@ public class UserController {
 
     //TODO: add optional queries with query string parameters
     @GetMapping
-    public List<AppUser> getAll() {
-        return appUserService.getAll();
+    public ResponseEntity<?> getAll(
+//            @RequestParam Map<String, String> requestParams
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("pageSize") Optional<Integer> pageSize
+    ) {
+        logger.info("get all users with query params: {}, {}", page, pageSize);
+        Pageable pageable = PageRequest.of(
+                page.orElse(0),
+                pageSize.orElse(5),
+                Sort.by("id")
+        );
+        logger.info("get all users pageable request: {}", pageable);
+        return ResponseEntity.ok(
+                appUserService.getAll(pageable)
+        );
     }
 
     @GetMapping("{id}")
@@ -89,7 +105,6 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 
 }

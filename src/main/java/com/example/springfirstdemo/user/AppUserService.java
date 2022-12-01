@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,10 +32,10 @@ public class AppUserService {
         this.userRepository = userRepository;
     }
 
-    public List<AppUser> getAll() {
+    public Page<AppUser> getAll(Pageable pageable) {
         logger.debug("getting all users");
 
-        List<AppUser> users = userRepository.findAll();
+        Page<AppUser> users = userRepository.findAll(pageable);
         return users;
     }
 
@@ -39,7 +43,7 @@ public class AppUserService {
         logger.info("getting user by userId: {}", userId);
 
         Optional<AppUser> user = userRepository.findById(userId);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             logger.info("user not found with userId: {}", userId);
         } else {
             logger.info("user found with userId: {}, email: {}", user.get().getId(), user.get().getEmail());
@@ -51,6 +55,14 @@ public class AppUserService {
     @Transactional()
     public AppUser create(CreateUserRequest createUserRequest) {
         logger.info("Creating a new with the details: {}", createUserRequest);
+
+//        AppUser userWithSameEmail = userRepository.findFirstByEmail(createUserRequest.getEmail());
+//        if(userWithSameEmail != null) {
+//            throw new BadRequestException("email: %s is already taken", createUserRequest.getEmail());
+//        }
+        if (userRepository.existsByEmail(createUserRequest.getEmail())) {
+            throw new BadRequestException("email: %s is already taken", createUserRequest.getEmail());
+        }
 
         if (createUserRequest.getName() == null || createUserRequest.getName().isEmpty()) {
             throw new BadRequestException("Cannot create user. Empty user name received");
@@ -80,24 +92,24 @@ public class AppUserService {
     public AppUser update(UUID userId, UpdateUserRequest updateUserRequest) {
         logger.debug("updated user by userId: {} with new data: {}", userId, updateUserRequest);
         Optional<AppUser> user = getById(userId);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new NotFoundException("user with userId: %s not found", userId);
         }
 
-        if(updateUserRequest.getName() != null && !updateUserRequest.getName().isEmpty()) {
+        if (updateUserRequest.getName() != null && !updateUserRequest.getName().isEmpty()) {
             user.get().setName(updateUserRequest.getName());
         }
 
-        if(updateUserRequest.getEmail() != null && !updateUserRequest.getEmail().isEmpty()) {
+        if (updateUserRequest.getEmail() != null && !updateUserRequest.getEmail().isEmpty()) {
             user.get().setEmail(updateUserRequest.getEmail());
         }
 
-        if(updateUserRequest.getDateOfBirth() != null) {
+        if (updateUserRequest.getDateOfBirth() != null) {
             user.get().setDateOfBirth(updateUserRequest.getDateOfBirth());
         }
 
         logger.info("user {} updated", userId);
-        userRepository.save(user.get());
+//        userRepository.save(user.get());
 
         return user.get();
     }
