@@ -1,5 +1,6 @@
 package com.example.springfirstdemo.common.advice;
 
+import com.example.springfirstdemo.common.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,11 +12,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.ControllerAdviceBean;
 
+import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class ExceptionHandlerControllerAdvice {
@@ -39,5 +41,22 @@ public class ExceptionHandlerControllerAdvice {
                         )
                 );
         return ResponseEntity.badRequest().body(errorsMap);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ResponseEntity<Map<String, String>> notFoundExceptionHandler(NotFoundException exception) {
+        log.error("not found error", exception);
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(
+                        new HashMap<>()
+                        {
+                            {put("timestamp", OffsetDateTime.now().toString());}
+                            {put("status", "404");}
+                            {put("message", exception.getMessage());}
+
+                        }
+                );
     }
 }

@@ -1,13 +1,12 @@
 package com.example.springfirstdemo.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.springfirstdemo.todos.Todo;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,6 +25,9 @@ public class AppUser {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    private List<Todo> todos;
 
     public AppUser() {
     }
