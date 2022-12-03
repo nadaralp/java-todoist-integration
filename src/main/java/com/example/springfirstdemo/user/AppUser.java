@@ -58,6 +58,14 @@ public class AppUser {
         this.email = email;
     }
 
+    public List<Todo> getTodos() {
+        return todos;
+    }
+
+    public void setTodos(List<Todo> todos) {
+        this.todos = todos;
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/todos")
@@ -17,6 +19,17 @@ public class TodoController {
     @Autowired
     public TodoController(TodoService todoService) {
         this.todoService = todoService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllByUser(@RequestParam Optional<String> userId) {
+        if (userId.isEmpty()) {
+            return ResponseEntity.badRequest().body("userId query is required");
+        }
+
+        return ResponseEntity.ok().body(
+                todoService.getUserTodos(UUID.fromString(userId.get()))
+        );
     }
 
     @PostMapping

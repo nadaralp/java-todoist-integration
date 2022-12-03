@@ -1,11 +1,14 @@
 package com.example.springfirstdemo.todos;
 
 import com.example.springfirstdemo.user.AppUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.*;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Entity
 //@Table()
@@ -19,6 +22,10 @@ public class Todo {
             generator = "todo_sequence"
     )
     private Long id;
+
+    @Column(updatable = false, insertable = false)
+//    @JsonIgnore
+    private UUID userId;
 
     @Column
     private String task;
@@ -41,6 +48,9 @@ public class Todo {
     private ZonedDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    @JsonIgnore
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private AppUser user;
 
     public Todo() {
@@ -62,16 +72,40 @@ public class Todo {
         return task;
     }
 
+    public void setTask(String task) {
+        this.task = task;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isCompleted() {
         return isCompleted;
     }
 
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
+
     public OffsetDateTime getDueDate() {
         return dueDate;
+    }
+
+    public void setDueDate(OffsetDateTime dueDate) {
+        this.dueDate = dueDate;
     }
 
     public OffsetDateTime getCreatedAt() {
@@ -84,22 +118,6 @@ public class Todo {
 
     public AppUser getUser() {
         return user;
-    }
-
-    public void setTask(String task) {
-        this.task = task;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
-    }
-
-    public void setDueDate(OffsetDateTime dueDate) {
-        this.dueDate = dueDate;
     }
 
     public void setUser(AppUser user) {
