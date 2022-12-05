@@ -29,14 +29,14 @@ public class SpringFirstDemoApplication {
         return new TestClass();
     }
 
-//    @Bean
-//    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-//        return args -> {
-//            System.out.println("Inspecting the beans added to the application context");
-//
-//            for (String beanName : ctx.getBeanDefinitionNames()) {
-//                System.out.println("bean name: " + beanName);
-//            }
-//        };
-//    }
+    @Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+        return args -> {
+            System.out.println("Inspecting the beans added to the application context");
+
+            for (String beanName : ctx.getBeanDefinitionNames()) {
+                System.out.println("bean name: " + beanName);
+            }
+        };
+    }
 }
