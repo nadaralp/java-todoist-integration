@@ -1,3 +1,10 @@
+// TODO: fix error: eagerly fetching all todos of people
+
+Read again about what to retrun from Application Layer (service layer):
+https://stackoverflow.com/questions/21554977/should-services-always-return-dtos-or-can-they-also-return-domain-models
+
+Read about what is application layer.
+
 <<For today>>
 0. Spring data JPA: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#preface
 1. What are @Bean annotations

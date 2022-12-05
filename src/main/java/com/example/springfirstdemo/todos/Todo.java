@@ -24,7 +24,7 @@ public class Todo {
     private Long id;
 
     @Column(updatable = false, insertable = false)
-//    @JsonIgnore
+    @JsonIgnore
     private UUID userId;
 
     @Column

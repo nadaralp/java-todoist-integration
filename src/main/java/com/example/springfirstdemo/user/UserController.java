@@ -2,27 +2,23 @@ package com.example.springfirstdemo.user;
 
 import com.example.springfirstdemo.common.exceptions.BadRequestException;
 import com.example.springfirstdemo.common.exceptions.NotFoundException;
+import com.example.springfirstdemo.user.api_models.AppUserDto;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -33,9 +29,14 @@ public class UserController {
 
     private final AppUserService appUserService;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public UserController(AppUserService appUserService) {
+    public UserController(
+            AppUserService appUserService,
+            ModelMapper modelMapper) {
         this.appUserService = appUserService;
+        this.modelMapper = modelMapper;
     }
 
     //TODO: add optional queries with query string parameters
@@ -52,9 +53,11 @@ public class UserController {
                 Sort.by("id")
         );
         logger.info("get all users pageable request: {}", pageable);
-        return ResponseEntity.ok(
-                appUserService.getAll(pageable)
-        );
+        Page<AppUser> users = appUserService.getAll(pageable);
+
+        // the object -> to the dto
+        var usersResponse = users.map(user -> modelMapper.map(user, AppUserDto.class));
+        return ResponseEntity.ok(usersResponse);
     }
 
     @GetMapping("{id}")
