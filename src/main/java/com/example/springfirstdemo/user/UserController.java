@@ -56,7 +56,7 @@ public class UserController {
         Page<AppUser> users = appUserService.getAll(pageable);
 
         // the object -> to the dto
-        var usersResponse = users.map(user -> modelMapper.map(user, AppUserDto.class));
+        Page<AppUserDto> usersResponse = users.map(user -> modelMapper.map(user, AppUserDto.class));
         return ResponseEntity.ok(usersResponse);
     }
 
@@ -67,7 +67,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(user.get());
+        return ResponseEntity.ok(modelMapper.map(user.get(), AppUserDto.class));
     }
 
     @PostMapping

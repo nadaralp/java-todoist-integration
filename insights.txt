@@ -16,3 +16,16 @@ Final persistent attributes or methods are not aloud.
 When the target argument fails to pass the validation, Spring Boot throws a MethodArgumentNotValidException exception.
 
 5. When you add new methods the dev server cannot pick it up. You have to restart manually.
+
+6. Communication in a three-tier application should be as follows
+
+User (sends DTO) -> Controller (DTO) -> Service (Domain) -> Repository
+User             <- (DTO) Controller <- (Domain) Service <- (Domain) Repository
+
+7. Jackson serialization
+By default, Jackson 2 will only work with with fields that are either public, or have a public getter methods – serializing an entity that has all fields private or package private will fail:
+
+Also jackson removes "get", "set" and "is" from property getters.
+For example "getAge" because "age" in the JSON field.
+https://stackoverflow.com/questions/32270422/jackson-renames-primitive-boolean-field-by-removing-is
+

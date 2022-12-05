@@ -1,0 +1,25 @@
+* ModelMapper - similar to AutoMapper to map models dynamically.
+Useful for mapping Application Layer (services) entities to view models/dtos
+http://modelmapper.org/getting-started/
+
+Example:
+ModelMapper modelMapper = new ModelMapper();
+        // the object -> to the dto
+        var usersResponse =users.map(user -> modelMapper.map(user, AppUserDto.class));
+
+Check MapStruct for similar behavior (maybe better)
+https://github.com/mapstruct/mapstruct
+
+* Project Lombok - Bytecode generation
+https://www.baeldung.com/intro-to-project-lombok
+
+    @Data - https://projectlombok.org/features/Data
+    @Value - https://projectlombok.org/features/Value
+
+
+Example:
+    @Setter
+    @Getter
+    @NoArgConstructor
+    @AllArgConstructor
+    @ToString
