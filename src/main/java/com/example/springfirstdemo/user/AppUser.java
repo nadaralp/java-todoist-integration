@@ -1,5 +1,6 @@
 package com.example.springfirstdemo.user;
 
+import com.example.springfirstdemo.todoist.UserTodoistInfo;
 import com.example.springfirstdemo.todos.Todo;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,6 +29,9 @@ public class AppUser {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Todo> todos;
+
+    @OneToOne(mappedBy="user")
+    private UserTodoistInfo todoistInfo;
 
     public AppUser() {
     }
@@ -78,14 +82,23 @@ public class AppUser {
         return createdAt;
     }
 
+    public UserTodoistInfo getTodoistInfo() {
+        return todoistInfo;
+    }
+
+    public void setTodoistInfo(UserTodoistInfo todoistInfo) {
+        this.todoistInfo = todoistInfo;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
+        return "AppUser{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", createdAt=" + createdAt +
+                ", todoistInfo=" + todoistInfo +
                 '}';
     }
 }
