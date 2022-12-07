@@ -9,12 +9,18 @@ public class UserTodoistInfo {
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
-    private  Long id;
+    private Long id;
 
     private String todoistApiKey; // must be encrypted while saving.
-
     @OneToOne
     private AppUser user;
+
+    public UserTodoistInfo() {
+    }
+
+    public UserTodoistInfo(String todoistApiKey) {
+        this.todoistApiKey = todoistApiKey;
+    }
 
     public Long getId() {
         return id;

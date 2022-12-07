@@ -1,4 +1,4 @@
-package com.example.springfirstdemo.user;
+package com.example.springfirstdemo.user.dto;
 
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,6 +20,8 @@ public class CreateUserRequest {
     @NotNull
     private LocalDate dateOfBirth;
 
+    private String todoistApiKey;
+
     public String getName() {
         return name;
     }
@@ -32,12 +34,17 @@ public class CreateUserRequest {
         return dateOfBirth;
     }
 
+    public String getTodoistApiKey() {
+        return todoistApiKey;
+    }
+
     @Override
     public String toString() {
         return "CreateUserRequest{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
+                ", todoistApiKey='" + todoistApiKey + '\'' +
                 '}';
     }
 }

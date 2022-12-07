@@ -2,7 +2,11 @@ package com.example.springfirstdemo.user;
 
 import com.example.springfirstdemo.common.exceptions.BadRequestException;
 import com.example.springfirstdemo.common.exceptions.NotFoundException;
-import com.example.springfirstdemo.user.api_models.AppUserDto;
+import com.example.springfirstdemo.user.dto.AppUserResponse;
+import com.example.springfirstdemo.user.dto.CreateUserRequest;
+import com.example.springfirstdemo.user.dto.UpdateUserRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -18,7 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -56,7 +62,7 @@ public class UserController {
         Page<AppUser> users = appUserService.getAll(pageable);
 
         // the object -> to the dto
-        Page<AppUserDto> usersResponse = users.map(user -> modelMapper.map(user, AppUserDto.class));
+        Page<AppUserResponse> usersResponse = users.map(user -> modelMapper.map(user, AppUserResponse.class));
         return ResponseEntity.ok(usersResponse);
     }
 
@@ -67,9 +73,16 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(modelMapper.map(user.get(), AppUserDto.class));
+        return ResponseEntity.ok(modelMapper.map(user.get(), AppUserResponse.class));
     }
 
+    // Example of a swagger annotation
+    @Operation(
+            summary = "Create a new user",
+            tags = {"test-tag", "user-controller"},
+            description = "test description"
+    )
+    @ApiResponse(description = "test api response", responseCode = "201")
     @PostMapping
     public ResponseEntity<?> createUser(
             @RequestBody @Valid CreateUserRequest createUserRequest

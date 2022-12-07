@@ -2,22 +2,18 @@ package com.example.springfirstdemo.user;
 
 import com.example.springfirstdemo.common.exceptions.BadRequestException;
 import com.example.springfirstdemo.common.exceptions.NotFoundException;
+import com.example.springfirstdemo.todoist.TodoistClient;
+import com.example.springfirstdemo.todoist.UserTodoistInfo;
+import com.example.springfirstdemo.user.dto.CreateUserRequest;
+import com.example.springfirstdemo.user.dto.UpdateUserRequest;
 import jakarta.transaction.Transactional;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,7 +24,9 @@ public class AppUserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public AppUserService(UserRepository userRepository) {
+    public AppUserService(
+            UserRepository userRepository
+    ) {
         this.userRepository = userRepository;
     }
 
@@ -52,7 +50,7 @@ public class AppUserService {
 
     }
 
-    @Transactional()
+    @Transactional
     public AppUser create(CreateUserRequest createUserRequest) {
         logger.info("Creating a new with the details: {}", createUserRequest);
 
@@ -79,14 +77,22 @@ public class AppUserService {
             throw new BadRequestException("email: %s is already taken", createUserRequest.getEmail());
         }
 
-        AppUser newUser = new AppUser(
+
+
+        AppUser createdUser = new AppUser(
                 createUserRequest.getName(),
                 createUserRequest.getEmail(),
                 createUserRequest.getDateOfBirth()
         );
-        newUser = userRepository.save(newUser);
-        logger.info("User created: {}", newUser);
-        return newUser;
+        createdUser = userRepository.save(createdUser);
+        logger.info("User created: {}", createdUser);
+
+        if(createUserRequest.getTodoistApiKey() != null) {
+            UserTodoistInfo todoistInfo = new UserTodoistInfo(createUserRequest.getTodoistApiKey());
+            createdUser.setTodoistInfo(todoistInfo);
+            userRepository.save(createdUser);
+        }
+        return createdUser;
     }
 
     @Transactional

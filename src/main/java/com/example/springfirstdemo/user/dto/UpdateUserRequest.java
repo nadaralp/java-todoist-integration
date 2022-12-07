@@ -1,4 +1,4 @@
-package com.example.springfirstdemo.user;
+package com.example.springfirstdemo.user.dto;
 
 import java.time.LocalDate;
 

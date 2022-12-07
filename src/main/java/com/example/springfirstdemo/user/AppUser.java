@@ -30,7 +30,7 @@ public class AppUser {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Todo> todos;
 
-    @OneToOne(mappedBy="user")
+    @OneToOne(mappedBy="user", cascade = CascadeType.ALL)
     private UserTodoistInfo todoistInfo;
 
     public AppUser() {

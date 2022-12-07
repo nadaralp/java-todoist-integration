@@ -1,19 +1,16 @@
-package com.example.springfirstdemo.user.api_models;
+package com.example.springfirstdemo.user.dto;
 
-import com.example.springfirstdemo.todos.Todo;
 import lombok.*;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class AppUserDto {
+public class AppUserResponse {
     private UUID id;
 
     private String name;
