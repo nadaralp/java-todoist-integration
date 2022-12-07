@@ -1,5 +1,7 @@
 package com.example.springfirstdemo.common;
 
+import com.example.springfirstdemo.todoist.TodoistConfigProperties;
+import com.example.springfirstdemo.todoist.UserTodoistInfo;
 import com.example.springfirstdemo.todos.Todo;
 import com.example.springfirstdemo.todos.TodoRepository;
 import com.example.springfirstdemo.user.AppUser;
@@ -22,15 +24,16 @@ public class DatabaseInitializer {
     CommandLineRunner databaseInitialization(
             @Value("${test_param}") String testParam,
             @Value("${spring.jpa.hibernate.ddl-auto}") String ddlConfig,
+            TodoistConfigProperties todoistConfigProperties,
             TodoRepository todoRepository,
             UserRepository userRepository
     ) {
         return args -> {
             log.info("custom params. test_param:{}, nadar.param:{}", testParam, null);
 
-            if(ddlConfig.equals("create")) {
+            if (ddlConfig.equals("create")) {
                 log.info("seeding database");
-                List<AppUser> seedUsers = getUserSeedWithTodos();
+                List<AppUser> seedUsers = getUserSeedWithTodos(todoistConfigProperties);
                 seedUsers.forEach(user -> userRepository.saveAll(seedUsers));
             } else {
                 log.info("not seeding because ddl config is: {}", ddlConfig);
@@ -39,7 +42,7 @@ public class DatabaseInitializer {
         };
     }
 
-    List<AppUser> getUserSeedWithTodos() {
+    List<AppUser> getUserSeedWithTodos(TodoistConfigProperties todoistConfigProperties) {
         AppUser nadar = new AppUser("Nadar Alpenidze", "nadar@gmail.com", LocalDate.of(1997, 10, 16));
         nadar.setTodos(
                 List.of(
@@ -47,6 +50,15 @@ public class DatabaseInitializer {
                         new Todo("Make bed", null, false, null, nadar)
                 )
         );
+
+
+        nadar.setTodoistInfo(
+                new UserTodoistInfo(
+                        todoistConfigProperties.getTodoistDevApiKey(), // receive as a parameter from application.properties
+                        nadar
+                )
+        );
+
         AppUser daria = new AppUser("Daria Liukin", "darialiukin3@gmail.com", LocalDate.of(1998, 2, 3));
         daria.setTodos(
                 List.of(

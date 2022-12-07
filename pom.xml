@@ -49,6 +49,13 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
+<!--        To process configuration properties (application.properties) with @ConfigurationProperties-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,6 +13,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+@Service
 public class TodoistClientImpl implements TodoistClient {
     private static final Logger log = LoggerFactory.getLogger(TodoistClientImpl.class);
     private static final String TODOIST_API_URL = "https://api.todoist.com/rest";

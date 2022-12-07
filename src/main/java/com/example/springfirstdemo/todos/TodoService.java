@@ -2,6 +2,8 @@ package com.example.springfirstdemo.todos;
 
 import com.example.springfirstdemo.common.exceptions.BadRequestException;
 import com.example.springfirstdemo.common.exceptions.NotFoundException;
+import com.example.springfirstdemo.todoist.TodoistClient;
+import com.example.springfirstdemo.todoist.TodoistCreateTaskRequest;
 import com.example.springfirstdemo.user.AppUser;
 import com.example.springfirstdemo.user.AppUserService;
 import jakarta.transaction.Transactional;
@@ -20,11 +22,16 @@ public class TodoService {
 
     private final AppUserService userService;
     private final TodoRepository todoRepository;
+    private final TodoistClient todoistClient;
 
     @Autowired
-    public TodoService(AppUserService userService, TodoRepository todoRepository) {
+    public TodoService(
+            AppUserService userService,
+            TodoRepository todoRepository,
+            TodoistClient todoistClient) {
         this.userService = userService;
         this.todoRepository = todoRepository;
+        this.todoistClient = todoistClient;
     }
 
     public List<Todo> getUserTodos(UUID userId) {
@@ -39,28 +46,37 @@ public class TodoService {
     }
 
     @Transactional
-    public Todo createTodo(CreateTodoRequest createTodoRequest) {
-        log.info("creating todo: {}", createTodoRequest);
+    public Todo createTodo(CreateTodoRequest request) {
+        log.info("creating todo: {}", request);
 
-        var user = userService.getById(createTodoRequest.getUserId());
-        if (user.isEmpty()) {
-            throw new NotFoundException("user with id: %s doesn't exist. Can't create a todo", createTodoRequest.getUserId());
-        }
+        var user = userService.getById(request.getUserId())
+                .orElseThrow(() -> new NotFoundException("user with id: %s doesn't exist. Can't create a todo", request.getUserId()));
 
-        if (createTodoRequest.getDueDate() != null && Instant.now().compareTo(createTodoRequest.getDueDate().toInstant()) < 0) {
+
+        if (request.getDueDate() != null && Instant.now().compareTo(request.getDueDate().toInstant()) < 0) {
             throw new BadRequestException("todo due date must be greather than this moment");
         }
 
         Todo todo = new Todo(
-                createTodoRequest.getTask(),
-                createTodoRequest.getDescription(),
-
+                request.getTask(),
+                request.getDescription(),
                 false,
-                createTodoRequest.getDueDate(),
-                user.get()
+                request.getDueDate(),
+                user
         );
         todoRepository.save(todo);
         log.info("created todo");
+
+        if (user.getTodoistInfo() != null) {
+            log.info("Adding task to todoist");
+            var todoistTask = new TodoistCreateTaskRequest(
+                    request.getTask(),
+                    request.getDescription(),
+                    request.getDueDate() != null ? request.getDueDate().toLocalDate() : null
+            );
+            todoistClient.addTodoistTask(todoistTask, user.getTodoistInfo().getTodoistApiKey());
+        }
+
         return todo;
     }
 }
