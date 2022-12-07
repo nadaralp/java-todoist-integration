@@ -78,7 +78,6 @@ public class AppUserService {
         }
 
 
-
         AppUser createdUser = new AppUser(
                 createUserRequest.getName(),
                 createUserRequest.getEmail(),
@@ -87,8 +86,11 @@ public class AppUserService {
         createdUser = userRepository.save(createdUser);
         logger.info("User created: {}", createdUser);
 
-        if(createUserRequest.getTodoistApiKey() != null) {
-            UserTodoistInfo todoistInfo = new UserTodoistInfo(createUserRequest.getTodoistApiKey());
+        if (createUserRequest.getTodoistApiKey() != null) {
+            UserTodoistInfo todoistInfo = new UserTodoistInfo(
+                    createUserRequest.getTodoistApiKey(),
+                    createdUser
+            );
             createdUser.setTodoistInfo(todoistInfo);
             userRepository.save(createdUser);
         }

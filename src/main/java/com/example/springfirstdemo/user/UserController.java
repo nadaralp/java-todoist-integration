@@ -95,7 +95,9 @@ public class UserController {
                             URI.create(serverBaseUri + "/api/users/" + createdUser.getId())
                     )
                     .header("x-test", "nadar")
-                    .body(createdUser);
+                    .body(
+                            modelMapper.map(createdUser, AppUserResponse.class)
+                    );
         } catch (BadRequestException e) {
             return ResponseEntity
                     .badRequest()

@@ -12,14 +12,16 @@ public class UserTodoistInfo {
     private Long id;
 
     private String todoistApiKey; // must be encrypted while saving.
+
     @OneToOne
     private AppUser user;
 
     public UserTodoistInfo() {
     }
 
-    public UserTodoistInfo(String todoistApiKey) {
+    public UserTodoistInfo(String todoistApiKey, AppUser user) {
         this.todoistApiKey = todoistApiKey;
+        this.user = user;
     }
 
     public Long getId() {
@@ -38,12 +40,15 @@ public class UserTodoistInfo {
         return user;
     }
 
+    public void setUser(AppUser user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "UserTodoistInfo{" +
                 "id=" + id +
                 ", todoistApiKey='" + todoistApiKey + '\'' +
-                ", user=" + user +
                 '}';
     }
 }
