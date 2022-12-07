@@ -4,6 +4,8 @@ import com.example.springfirstdemo.todos.Todo;
 import com.example.springfirstdemo.todos.TodoRepository;
 import com.example.springfirstdemo.user.AppUser;
 import com.example.springfirstdemo.user.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,16 +15,27 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Configuration
+@Slf4j
 public class DatabaseInitializer {
 
     @Bean
     CommandLineRunner databaseInitialization(
+            @Value("${test_param}") String testParam,
+            @Value("${spring.jpa.hibernate.ddl-auto}") String ddlConfig,
             TodoRepository todoRepository,
             UserRepository userRepository
     ) {
         return args -> {
-            List<AppUser> seedUsers = getUserSeedWithTodos();
-            seedUsers.forEach(user -> userRepository.saveAll(seedUsers));
+            log.info("custom params. test_param:{}, nadar.param:{}", testParam, null);
+
+            if(ddlConfig.equals("create")) {
+                log.info("seeding database");
+                List<AppUser> seedUsers = getUserSeedWithTodos();
+                seedUsers.forEach(user -> userRepository.saveAll(seedUsers));
+            } else {
+                log.info("not seeding because ddl config is: {}", ddlConfig);
+            }
+
         };
     }
 
