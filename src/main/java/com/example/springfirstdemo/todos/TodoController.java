@@ -38,6 +38,12 @@ public class TodoController {
         URI serverUri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUri();
         return ResponseEntity.created(URI.create(serverUri + "/todos/" + createdTodo.getId())).body(createdTodo);
     }
+
+    @PostMapping("{id}/complete")
+    public ResponseEntity<?> completeTodo(@PathVariable Long id) {
+        todoService.completeTodo(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 

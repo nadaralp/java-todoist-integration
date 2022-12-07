@@ -79,4 +79,18 @@ public class TodoService {
 
         return todo;
     }
+
+    @Transactional
+    public void completeTodo(Long todoId) {
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new NotFoundException("todo with id: %s doesn't exist", todoId));
+
+        if(todo.isCompleted()) {
+            throw new BadRequestException("The todo is already completed");
+        }
+
+        // That sets the state in the database because the entity is fetched in a managed state from Hibernate.
+        todo.setCompleted(true);
+        log.info("completed todo: {}", todoId);
+    }
 }

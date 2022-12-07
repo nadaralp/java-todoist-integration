@@ -1,16 +1,16 @@
 package com.example.springfirstdemo.common.advice;
 
+import com.example.springfirstdemo.common.exceptions.BadRequestException;
 import com.example.springfirstdemo.common.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.method.ControllerAdviceBean;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -50,13 +50,28 @@ public class ExceptionHandlerControllerAdvice {
         return ResponseEntity
                 .status(NOT_FOUND)
                 .body(
-                        new HashMap<>()
-                        {
-                            {put("timestamp", OffsetDateTime.now().toString());}
-                            {put("status", "404");}
-                            {put("message", exception.getMessage());}
+                        new HashMap<>() {
+                            {
+                                put("timestamp", OffsetDateTime.now().toString());
+                            }
+
+                            {
+                                put("status", "404");
+                            }
+
+                            {
+                                put("message", exception.getMessage());
+                            }
 
                         }
                 );
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(BAD_REQUEST)
+    @ResponseBody
+    public APIErrorResponse handleBadRequestException(BadRequestException exception) {
+        log.error("Caught bad request exception", exception);
+        return new APIErrorResponse(400, exception.getMessage());
     }
 }
