@@ -5,5 +5,8 @@ package com.example.springfirstdemo.todoist;
  * This client communicates with the todoist API and performs operations to integrate with it.
  */
 public interface TodoistClient {
-    TodoistCreateTaskResponse addTodoistTask(TodoistCreateTaskRequest request, String bearerAuthToken);
+    TodoistCreateTaskResponse addTask(TodoistCreateTaskRequest request, String bearerAuthToken);
+
+    void closeTask(String taskId, String bearerAuthToken);
+
 }

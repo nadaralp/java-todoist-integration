@@ -19,7 +19,7 @@ public class TodoistClientImpl implements TodoistClient {
     private static final String TODOIST_API_URL = "https://api.todoist.com/rest";
 
     @Override
-    public TodoistCreateTaskResponse addTodoistTask(TodoistCreateTaskRequest request, String bearerAuthToken) {
+    public TodoistCreateTaskResponse addTask(TodoistCreateTaskRequest request, String bearerAuthToken) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules(); // To find the module to register Java8 API for date and time
@@ -46,6 +46,30 @@ public class TodoistClientImpl implements TodoistClient {
             return todoistCreateTaskResponse;
 
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void closeTask(String taskId, String bearerAuthToken) {
+        log.info("closing todoist task: {}", taskId);
+
+        URI closeTaskUri = URI.create(String.format("%s/v2/tasks/%s/close", TODOIST_API_URL, taskId));
+
+        try {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpRequest httpRequest = HttpRequest
+                    .newBuilder(closeTaskUri)
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .header("Authorization", "Bearer " + bearerAuthToken)
+                    .build();
+            HttpResponse<Void> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.discarding());
+            if (response.statusCode() != 204) {
+                throw new IllegalStateException("Failed closing todoist task " + response.statusCode());
+            }
+            log.info("closed todoist task");
+        } catch (Exception e) {
+            log.error("Failed to close todoist task", e);
             throw new RuntimeException(e);
         }
     }

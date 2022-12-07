@@ -74,7 +74,7 @@ public class TodoService {
                     request.getDescription(),
                     request.getDueDate() != null ? request.getDueDate().toLocalDate() : null
             );
-            todoistClient.addTodoistTask(todoistTask, user.getTodoistInfo().getTodoistApiKey());
+            todoistClient.addTask(todoistTask, user.getTodoistInfo().getTodoistApiKey());
         }
 
         return todo;
